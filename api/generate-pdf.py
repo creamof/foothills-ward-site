@@ -115,13 +115,14 @@ class handler(BaseHTTPRequestHandler):
             data = json.loads(body)
             pdf_bytes = fill_pdf(data)
             name = (data.get('name', 'form') or 'form').replace(' ', '_')
-            activity_key = (data.get('activity', '') or '').replace('-', '_').title().replace('_', '')
-            if not activity_key:
-                # Try to derive from event name
-                ev = (data.get('evName', '') or '')
-                if 'Triathlon' in ev: activity_key = 'Triathlon'
-                elif 'Adventure' in ev: activity_key = 'HighAdventure'
-                else: activity_key = 'Activity'
+            activity_labels = {
+                'high-adventure': 'HighAdventure',
+                'triathlon':      'Triathlon',
+            }
+            activity_key = activity_labels.get(
+                data.get('activity', ''),
+                (data.get('activity', '') or 'Activity').replace('-', '').title() or 'Activity'
+            )
             filename = f"{activity_key}_{name}_Permission.pdf"
             self.send_response(200)
             self.send_header('Content-Type', 'application/pdf')
