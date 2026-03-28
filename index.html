@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 High Adventure — Foothills Ward</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canyon-red: #C4531A;
+    --canyon-orange: #E8752A;
+    --river-blue: #1A7B9E;
+    --river-teal: #2AA8BF;
+    --sand: #F2E8D5;
+    --dark: #1A1410;
+    --mid: #3A2E26;
+    --text: #2A1F18;
+    --gold: #D4A843;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--dark);
+    color: var(--sand);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0a0806 0%, #1a120a 40%, #2a1a0e 70%, #1a3040 100%);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 60% 30%, rgba(196,83,26,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(26,123,158,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 60% at 50% 100%, rgba(212,168,67,0.15) 0%, transparent 40%);
+  }
+
+  .canyon-silhouette {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,8,6,0.6) 40%, #0a0806 100%);
+  }
+
+  /* Canyon wall SVG shapes */
+  .canyon-walls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 55%;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 5vw 8vh;
+  }
+
+  .ward-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+    letter-spacing: 0.3em;
+    color: var(--river-teal);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 11rem);
+    line-height: 0.9;
+    color: var(--sand);
+    text-shadow: 0 4px 40px rgba(196,83,26,0.4);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero h1 span {
+    color: var(--canyon-orange);
+    display: block;
+  }
+
+  .hero-sub {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+    flex-wrap: wrap;
+  }
+
+  .hero-sub .date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+
+  .hero-sub .locations {
+    font-family: 'Barlow', sans-serif;
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    color: rgba(242,232,213,0.7);
+    font-style: italic;
+  }
+
+  .scroll-cta {
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .scroll-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--canyon-red);
+    color: var(--sand);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    padding: 0.9rem 2rem;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .scroll-cta a:hover { background: var(--canyon-orange); transform: translateY(-2px); }
+
+  .permission-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: transparent;
+    border: 2px solid var(--river-teal);
+    color: var(--river-teal);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    padding: 0.9rem 2rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .permission-btn:hover {
+    background: var(--river-teal);
+    color: var(--dark);
+    transform: translateY(-2px);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(26,20,16,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(196,83,26,0.3);
+    padding: 0 5vw;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(242,232,213,0.6);
+    text-decoration: none;
+    padding: 1rem 1.2rem;
+    white-space: nowrap;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+
+  nav a:hover { color: var(--canyon-orange); border-bottom-color: var(--canyon-orange); }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: clamp(4rem, 8vw, 7rem) 5vw;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--canyon-orange);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    color: var(--sand);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── OVERVIEW ── */
+  #overview {
+    background: linear-gradient(180deg, #0a0806 0%, #12100e 100%);
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: rgba(196,83,26,0.2);
+    border: 1px solid rgba(196,83,26,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .overview-card {
+    background: rgba(26,20,16,0.9);
+    padding: 2rem 1.5rem;
+    transition: background 0.2s;
+  }
+
+  .overview-card:hover { background: rgba(42,32,24,0.9); }
+
+  .overview-card .icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .overview-card .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--canyon-orange);
+    margin-bottom: 0.4rem;
+  }
+
+  .overview-card .value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--sand);
+    line-height: 1.3;
+  }
+
+  .permission-banner {
+    background: linear-gradient(135deg, rgba(26,123,158,0.2) 0%, rgba(42,168,191,0.1) 100%);
+    border: 1px solid var(--river-teal);
+    border-left: 4px solid var(--river-teal);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .permission-banner .text strong {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--river-teal);
+    display: block;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  .permission-banner .text p {
+    font-size: 0.9rem;
+    color: rgba(242,232,213,0.7);
+  }
+
+  /* ── ITINERARY ── */
+  #itinerary {
+    background: linear-gradient(180deg, #12100e 0%, #0e1520 100%);
+  }
+
+  .days-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .day-card {
+    background: rgba(20,26,35,0.8);
+    border: 1px solid rgba(26,123,158,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .day-card:hover {
+    border-color: rgba(26,123,158,0.5);
+    transform: translateY(-2px);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .day-number {
+    background: var(--river-blue);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    text-align: center;
+  }
+
+  .day-number .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--sand);
+  }
+
+  .day-number .day-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(242,232,213,0.7);
+    margin-top: 0.2rem;
+  }
+
+  .day-title-area {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .day-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+
+  .day-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    color: var(--sand);
+    line-height: 1;
+  }
+
+  .day-photo {
+    width: 120px;
+    min-height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: none;
+  }
+
+  @media (min-width: 600px) { .day-photo { display: block; } }
+
+  .day-body {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(26,123,158,0.15);
+  }
+
+  .timeline {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .timeline li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+    align-items: start;
+    font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+  }
+
+  .timeline .time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--canyon-orange);
+    letter-spacing: 0.05em;
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .timeline .desc { color: rgba(242,232,213,0.85); line-height: 1.5; }
+  .timeline .desc strong { color: var(--sand); }
+
+  .highlight-box {
+    background: rgba(196,83,26,0.1);
+    border-left: 3px solid var(--canyon-orange);
+    border-radius: 0 4px 4px 0;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    color: rgba(242,232,213,0.75);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+
+  .timeline .desc { grid-column: 2; }
+
+  .devotional {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--gold);
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  /* ── PACKING ── */
+  #packing {
+    background: linear-gradient(180deg, #0e1520 0%, #0f0c0a 100%);
+  }
+
+  .pack-warning {
+    background: linear-gradient(135deg, rgba(196,83,26,0.2) 0%, rgba(232,117,42,0.1) 100%);
+    border: 1px solid var(--canyon-red);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--canyon-orange);
+    line-height: 1.5;
+  }
+
+  .pack-warning span { color: var(--sand); }
+
+  .pack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .pack-category {
+    background: rgba(15,12,10,0.8);
+    border: 1px solid rgba(196,83,26,0.15);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .pack-category-header {
+    background: rgba(196,83,26,0.12);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(196,83,26,0.15);
+  }
+
+  .pack-category-header .icon { font-size: 1.3rem; }
+
+  .pack-category-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+
+  .pack-items {
+    list-style: none;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .pack-items li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: rgba(242,232,213,0.8);
+    line-height: 1.4;
+  }
+
+  .pack-items li::before {
+    content: '✓';
+    color: var(--river-teal);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .pack-items li.required {
+    color: var(--sand);
+    font-weight: 500;
+  }
+
+  .pack-items li.required::before { color: var(--gold); content: '★'; }
+
+  .pack-items li.no::before { content: '✗'; color: #e05252; }
+  .pack-items li.no { color: rgba(242,232,213,0.6); }
+
+  .provided-note {
+    margin-top: 2rem;
+    background: rgba(26,123,158,0.1);
+    border: 1px solid rgba(26,123,158,0.3);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9rem;
+    color: rgba(242,232,213,0.75);
+    line-height: 1.6;
+  }
+
+  .provided-note strong { color: var(--river-teal); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080604;
+    padding: 3rem 5vw;
+    border-top: 1px solid rgba(196,83,26,0.2);
+    text-align: center;
+  }
+
+  footer .footer-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--canyon-orange);
+    margin-bottom: 0.5rem;
+  }
+
+  footer p {
+    font-size: 0.9rem;
+    color: rgba(242,232,213,0.5);
+    line-height: 1.6;
+  }
+
+  footer .footer-contact {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(242,232,213,0.4);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+
+    /* ── BASE FONT SIZE — scales everything up automatically ── */
+    html { font-size: 18px; }
+
+    /* ── HERO ── */
+    .hero h1 { font-size: clamp(2.8rem, 16vw, 5rem); }
+    .hero-content { padding: 0 6vw 6vh; }
+    .hero-sub { gap: 0.75rem; margin-top: 1rem; flex-direction: column; align-items: flex-start; }
+    .scroll-cta { display: flex; flex-direction: column; gap: 0.6rem; }
+    .scroll-cta a, .permission-btn { width: 100%; justify-content: center; font-size: 1rem; padding: 0.8rem 1rem; }
+
+    /* ── NAV ── */
+    nav a { padding: 0.8rem 0.9rem; font-size: 0.88rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 3rem 4vw; }
+    .section-title { font-size: clamp(2rem, 10vw, 3rem); margin-bottom: 1.5rem; }
+
+    /* ── OVERVIEW GRID ── */
+    .overview-grid { grid-template-columns: 1fr 1fr; }
+    .overview-card { padding: 1.25rem 1rem; }
+    .overview-card .value { font-size: 1rem; }
+
+    /* ── PERMISSION BANNER ── */
+    .permission-banner { flex-direction: column; gap: 0.75rem; }
+    .permission-banner .permission-btn { width: 100%; justify-content: center; }
+
+    /* ── DAY CARDS ── */
+    .day-number { min-width: 56px; padding: 1rem 0.5rem; }
+    .day-number .num { font-size: 1.9rem; }
+    .day-title { font-size: 1.15rem; }
+    .day-date { font-size: 0.85rem; }
+    .day-body { padding: 0.9rem 0.75rem; }
+
+    /* ── TIMELINE — stack time + desc vertically on mobile ── */
+    .timeline li {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .timeline .time {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .timeline .desc {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* ── STOPS LIST — full width, proper wrap ── */
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight-box { font-size: 1rem; }
+
+    /* ── PACKING ── */
+    .pack-warning { font-size: 1rem; line-height: 1.6; }
+    .pack-grid { grid-template-columns: 1fr; }
+    .pack-items li { font-size: 1rem; }
+
+    /* ── PERMISSION SECTION ── */
+    #permission div[style*="max-width:640px"] { max-width: 100% !important; }
+    #permission div[style*="display:flex"] { flex-direction: column; }
+
+    /* ── FOOTER ── */
+    footer { padding: 2rem 5vw; }
+    footer .footer-title { font-size: 1.4rem; }
+  } { max-width: 100% !important; }
+    #permission div[style*="display:flex"] { flex-direction: column; }
+
+    /* ── FOOTER ── */
+    footer { padding: 2rem 5vw; }
+    footer .footer-title { font-size: 1.4rem; }
+  }
+
+  @media (max-width: 768px) {
+    /* ── TABLET — day cards, timeline, pack grid ── */
+    .timeline li { grid-template-columns: 65px 1fr; gap: 0.6rem; }
+    .pack-grid { grid-template-columns: 1fr 1fr; }
+    .day-title { font-size: 1.25rem; }
+    .section-title { font-size: clamp(2rem, 7vw, 3.5rem); }
+    .overview-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  }
+    .timeline li { grid-template-columns: 60px 1fr; }
+    .permission-banner { flex-direction: column; }
+  }
+
+  .stops-block {
+    margin-top: 0.5rem;
+    grid-column: 1 / -1;
+  }
+  .stop-item {
+    font-size: 0.88rem;
+    color: rgba(242,232,213,0.8);
+    line-height: 1.6;
+    margin-bottom: 0.3rem;
+    padding: 0;
+  }
+  .stop-item strong { color: var(--sand); }
+  @media (max-width: 600px) {
+    .stop-item { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+
+  <!-- Canyon walls SVG -->
+  <svg class="canyon-walls" viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Left wall -->
+    <path d="M0,400 L0,180 L60,200 L80,150 L120,170 L160,120 L200,145 L220,100 L260,130 L300,80 L340,110 L360,60 L380,90 L400,400 Z" fill="rgba(60,35,20,0.7)"/>
+    <path d="M0,400 L0,220 L40,240 L70,200 L100,220 L140,185 L180,210 L200,400 Z" fill="rgba(40,22,12,0.9)"/>
+    <!-- Right wall -->
+    <path d="M1440,400 L1440,160 L1380,185 L1350,140 L1310,165 L1270,115 L1230,140 L1200,95 L1160,125 L1120,75 L1080,105 L1060,55 L1040,85 L1020,400 Z" fill="rgba(55,30,18,0.7)"/>
+    <path d="M1440,400 L1440,200 L1400,220 L1370,195 L1330,215 L1290,180 L1250,205 L1220,400 Z" fill="rgba(35,18,10,0.9)"/>
+    <!-- River reflection -->
+    <ellipse cx="720" cy="390" rx="300" ry="30" fill="rgba(26,123,158,0.15)"/>
+  </svg>
+
+  <div class="hero-content">
+    <p class="ward-label">Foothills Ward Young Men &bull; 2026</p>
+    <h1>High<span>Adventure</span></h1>
+    <div class="hero-sub">
+      <span class="date">May 26 – 30, 2026</span>
+      <span class="locations">Lee's Ferry &bull; Glen Canyon &bull; Buckskin Gulch</span>
+    </div>
+    <div class="scroll-cta">
+      <a href="#overview">View Trip Details ↓</a>
+      &nbsp;&nbsp;
+      <a href="foothills_permission.html" class="permission-btn">📋 Permission Form</a>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#itinerary">Itinerary</a>
+  <a href="#packing">Packing</a>
+  <a href="#permission">Permission</a>
+</nav>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <p class="section-label fade-in">The Mission</p>
+  <h2 class="section-title fade-in">What Awaits</h2>
+
+  <div class="overview-grid fade-in">
+    <div class="overview-card">
+      <span class="icon">📅</span>
+      <div class="label">Dates</div>
+      <div class="value">May 26 – 30, 2026<br><small style="color:rgba(242,232,213,0.5);font-size:0.8rem">Tue – Sat · 5 Days</small></div>
+    </div>
+    <div class="overview-card">
+      <span class="icon">🏔️</span>
+      <div class="label">Destinations</div>
+      <div class="value">Lee's Ferry<br>Glen Canyon<br>Buckskin Gulch</div>
+    </div>
+    <div class="overview-card">
+      <span class="icon">🚗</span>
+      <div class="label">Depart</div>
+      <div class="value">4:00 PM, May 26<br><small style="color:rgba(242,232,213,0.5);font-size:0.8rem">4901 W Union Hills Dr</small></div>
+    </div>
+    <div class="overview-card">
+      <span class="icon">🏠</span>
+      <div class="label">Return</div>
+      <div class="value">~3:00 PM, May 30<br><small style="color:rgba(242,232,213,0.5);font-size:0.8rem">Foothills Ward</small></div>
+    </div>
+    <div class="overview-card">
+      <span class="icon">🛶</span>
+      <div class="label">Activities</div>
+      <div class="value">Kayaking · Slot Canyon<br>Hiking · Camping</div>
+    </div>
+    <div class="overview-card">
+      <span class="icon">🌡️</span>
+      <div class="label">Weather</div>
+      <div class="value">80–90°F days<br><small style="color:rgba(242,232,213,0.5);font-size:0.8rem">~50°F river water</small></div>
+    </div>
+  </div>
+
+  <div class="permission-banner fade-in" id="permission-banner">
+    <div class="text">
+      <strong>📋 Permission Slip Required — Due April 26th</strong>
+      <p>Every participant (youth and adults) must have a signed permission slip on file before departure.</p>
+    </div>
+    <a href="foothills_permission.html" class="permission-btn" style="white-space:nowrap">Open Form →</a>
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section id="itinerary">
+  <p class="section-label fade-in">Day by Day</p>
+  <h2 class="section-title fade-in">The Itinerary</h2>
+
+  <div class="days-grid">
+
+    <!-- DAY 1 -->
+    <div class="day-card fade-in">
+      <div class="day-header">
+        <div class="day-number" style="background:var(--mid)">
+          <span class="num">1</span>
+          <span class="day-name">Tue</span>
+        </div>
+        <div class="day-title-area">
+          <div class="day-date">May 26</div>
+          <div class="day-title">Travel & Setup</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <ul class="timeline">
+          <li>
+            <span class="time">4:00 PM</span>
+            <span class="desc">Depart Foothills Ward — ~4.5 hour drive north through the Arizona high desert</span>
+          </li>
+          <li>
+            <span class="time">Evening</span>
+            <span class="desc">Arrive at Lee's Ferry Campground and set up camp under a sky full of stars</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card fade-in">
+      <div class="day-header">
+        <div class="day-number" style="background:var(--river-blue)">
+          <span class="num">2</span>
+          <span class="day-name">Wed</span>
+        </div>
+        <div class="day-title-area">
+          <div class="day-date">May 27</div>
+          <div class="day-title">Backhaul & Kayak the Colorado</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <ul class="timeline">
+          <li>
+            <span class="time">5:00 AM</span>
+            <span class="desc">Depart camp — unload kayaks and gear at the boat dock, then park vehicles</span>
+          </li>
+          <li>
+            <span class="time">5:30 AM</span>
+            <span class="desc"><strong>Ready at the dock</strong> — it's a long walk from parking, don't be late!</span>
+          </li>
+          <li>
+            <span class="time">6:00 AM</span>
+            <span class="desc">Meet <strong>Kayak the Colorado</strong> — jet boat backhaul upriver to Glen Canyon Dam (Mile 15). Boat captains share history and highlights along the way</span>
+          </li>
+          <li>
+            <span class="time">Morning</span>
+            <span class="desc">Inflate rental kayaks, unload personal kayaks, safety talk — then set off downstream. <em>Everyone paddles with their own gear — your small backpack and duffel load right into the kayak!</em></span>
+          </li>
+          <li>
+            <span class="time">All Day</span>
+            <span class="desc">
+              Paddle through breathtaking canyon country — crystal clear water, towering sandstone walls in shades of red, orange, and gold
+              <div class="stops-block"><p class="stop-item">→ 🪨 <strong>Petroglyphs at 10 Mile Beach</strong> — ancient rock art carved centuries ago</p><p class="stop-item">→ 🐴 Watch for <strong>wild horses</strong> on the left bank</p><p class="stop-item">→ 🏊 Swimming in the crystal clear (cold!) river</p><p class="stop-item">→ 🎣 Fishing for wild rainbow trout</p></div>
+            </span>
+          </li>
+          <li>
+            <span class="time">Evening</span>
+            <span class="desc">Camp at <strong>9 Mile / Horseshoe Bend Campground</strong> — right inside the famous bend with people looking down from the overlook 1,000 feet above!</span>
+          </li>
+          <li>
+            <span class="time">🕯️</span>
+            <span class="desc devotional">Evening campfire devotional — young men lead testimony sharing</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card fade-in">
+      <div class="day-header">
+        <div class="day-number" style="background:#1a5070">
+          <span class="num">3</span>
+          <span class="day-name">Thu</span>
+        </div>
+        <div class="day-title-area">
+          <div class="day-date">May 28</div>
+          <div class="day-title">Finish Kayak & Travel to Page</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <ul class="timeline">
+          <li>
+            <span class="time">Morning</span>
+            <span class="desc">Safety talk, then paddle the remaining <strong>~9 miles</strong> back to Lee's Ferry</span>
+          </li>
+          <li>
+            <span class="time">On the Way</span>
+            <span class="desc">
+              Two unmissable stops on the return paddle:
+              <div class="stops-block"><p class="stop-item">→ 🌊 <strong>Waterfall Slot Canyon at 4 Mile</strong> — 1.5 mile hike into a stunning slot canyon with a 500-foot dry waterfall. A perfect preview of Buckskin Gulch!</p><p class="stop-item">→ ⛵ <strong>Charles Spencer Sunken Steamboat</strong> — at the last bend before the boat ramp, the old steam boiler is visible just beneath the water's surface. A piece of Wild West history right beneath your feet!</p></div>
+            </span>
+          </li>
+          <li>
+            <span class="time">Afternoon</span>
+            <span class="desc">Return rental kayaks and load up vehicles</span>
+          </li>
+          <li>
+            <span class="time">Page, AZ</span>
+            <span class="desc"><strong>Horseshoe Bend Overlook</strong> — a stunning 270° bend in the Colorado River, 1,000 feet below. One of the most photographed spots in the American Southwest — and you just paddled right through it yesterday!</span>
+          </li>
+          <li>
+            <span class="time">Evening</span>
+            <span class="desc">Drive ~1–1.5 hours to Buckskin Gulch / Stateline Campground. Set up camp and feel the anticipation for tomorrow's hike</span>
+          </li>
+          <li>
+            <span class="time">🕯️</span>
+            <span class="desc devotional">Evening devotional — reflecting on God's creations and the beauty of the river</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card fade-in">
+      <div class="day-header">
+        <div class="day-number" style="background:var(--canyon-red)">
+          <span class="num">4</span>
+          <span class="day-name">Fri</span>
+        </div>
+        <div class="day-title-area">
+          <div class="day-date">May 29</div>
+          <div class="day-title">Buckskin Gulch Slot Canyon Hike</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="highlight-box">
+          Buckskin Gulch is the <strong style="color:var(--canyon-orange)">longest slot canyon in the world</strong> — 12.5 miles of narrow gorge with walls soaring 100–200 feet high, sculpted from Navajo Sandstone over thousands of years. In some sections the canyon is barely 10 feet wide and sunlight only reaches the floor for a few minutes each day.
+        </div>
+        <ul class="timeline" style="margin-top:1.25rem">
+          <li>
+            <span class="time">Morning</span>
+            <span class="desc">Enter via <strong>Wire Pass Trailhead</strong> — the most popular and dramatic entry point</span>
+          </li>
+          <li>
+            <span class="time">1.7 mi</span>
+            <span class="desc">Hike through Wire Pass wash and slot canyon to the Buckskin Gulch confluence — petroglyph panel right at the junction</span>
+          </li>
+          <li>
+            <span class="time">All Day</span>
+            <span class="desc">Explore as far into Buckskin Gulch as the group wants — most day hikers cover <strong>4–8 miles inside</strong> and spend 5+ hours in the canyon</span>
+          </li>
+          <li>
+            <span class="time">Total</span>
+            <span class="desc"><strong>~8–10 miles round trip</strong></span>
+          </li>
+          <li>
+            <span class="time">Evening</span>
+            <span class="desc">Camp at Whitehouse Trailhead Campground</span>
+          </li>
+          <li>
+            <span class="time">🕯️</span>
+            <span class="desc devotional">Evening campfire devotional — priesthood leadership and brotherhood</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card fade-in">
+      <div class="day-header">
+        <div class="day-number" style="background:#3a2a1a">
+          <span class="num">5</span>
+          <span class="day-name">Sat</span>
+        </div>
+        <div class="day-title-area">
+          <div class="day-date">May 30</div>
+          <div class="day-title">Return Home</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <ul class="timeline">
+          <li>
+            <span class="time">Morning</span>
+            <span class="desc">Pack up camp and load vehicles — carrying home memories that will last a lifetime</span>
+          </li>
+          <li>
+            <span class="time">Flagstaff</span>
+            <span class="desc">Lunch stop in Flagstaff</span>
+          </li>
+          <li>
+            <span class="time">3:00 PM</span>
+            <span class="desc"><strong>Arrive back at Foothills Ward</strong> — tired, sunburned, and changed for the better</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PACKING LIST -->
+<section id="packing">
+  <p class="section-label fade-in">What to Bring</p>
+  <h2 class="section-title fade-in">Packing List</h2>
+
+  <div class="pack-warning fade-in">
+    ⚠️ <span>Two bags max.</span> Each person gets <span>one small backpack + one small duffel bag or dry bag</span>, each lined with a garbage bag to keep everything dry. Multiple small bags are easier to pack and load into kayaks than one medium bag. Leave room — food and supplies will be added to your pack.
+  </div>
+
+  <div class="pack-grid">
+
+    <div class="pack-category fade-in">
+      <div class="pack-category-header">
+        <span class="icon">💧</span>
+        <h3>River Clothing (gets wet)</h3>
+      </div>
+      <ul class="pack-items">
+        <li class="required">Swimsuit</li>
+        <li class="required">2 long sleeve shirts (sun protection on the river)</li>
+        <li class="required">Sun or baseball hat</li>
+        <li class="required">Bandana</li>
+        <li class="required">Shoes that can and will get wet — old tennis shoes or sturdy strapped sandals</li>
+      </ul>
+    </div>
+
+    <div class="pack-category fade-in">
+      <div class="pack-category-header">
+        <span class="icon">🏕️</span>
+        <h3>Camp Clothing (stays dry)</h3>
+      </div>
+      <ul class="pack-items">
+        <li class="required">Hoodie, light jacket, or fleece (nights and river water are cool)</li>
+        <li>1 pair of pants</li>
+        <li>1 pair of shorts</li>
+        <li>2–3 shirts</li>
+        <li>4 pairs of socks</li>
+        <li>4 pairs of underwear</li>
+        <li>Camp sandals or flip flops</li>
+      </ul>
+    </div>
+
+    <div class="pack-category fade-in">
+      <div class="pack-category-header">
+        <span class="icon">🎒</span>
+        <h3>Gear</h3>
+      </div>
+      <ul class="pack-items">
+        <li class="required">Sleeping bag — <strong>lightweight & packable</strong></li>
+        <li class="required">Sleeping pad (lightweight)</li>
+        <li class="required">Headlamp + extra batteries</li>
+        <li class="required">Sunglasses</li>
+        <li class="required">Sunscreen SPF 50+</li>
+        <li>Lip balm with SPF</li>
+        <li>Small towel</li>
+        <li class="required">Insulated water bottle</li>
+        <li>Whistle</li>
+        <li class="required">Prescription medications (original containers, notify a leader)</li>
+      </ul>
+    </div>
+
+    <div class="pack-category fade-in">
+      <div class="pack-category-header">
+        <span class="icon">✨</span>
+        <h3>Optional</h3>
+      </div>
+      <ul class="pack-items">
+        <li>Trip journal</li>
+        <li>Bug repellent</li>
+        <li>Fishing gear + valid Arizona fishing license</li>
+      </ul>
+    </div>
+
+    <div class="pack-category fade-in" style="border-color:rgba(224,82,82,0.3)">
+      <div class="pack-category-header" style="background:rgba(224,82,82,0.1);border-color:rgba(224,82,82,0.2)">
+        <span class="icon">🚫</span>
+        <h3>Leave at Home</h3>
+      </div>
+      <ul class="pack-items">
+        <li class="no">Phones, tablets, gaming devices — <strong>technology-free trip!</strong></li>
+        <li class="no">Large suitcases, large duffel bags, or backpacks</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="provided-note fade-in">
+    <strong>Provided by leaders:</strong> Kayaks, life jackets, group cooking gear, tents, food, electrolytes, and all emergency/first aid supplies. ★ = must-have items
+  </div>
+</section>
+
+<!-- PERMISSION -->
+<section id="permission" style="background:#080604;border-top:1px solid rgba(26,123,158,0.2)">
+  <p class="section-label fade-in">Required</p>
+  <h2 class="section-title fade-in">Permission Form</h2>
+
+  <div class="fade-in" style="max-width:640px">
+    <p style="color:rgba(242,232,213,0.75);margin-bottom:0.75rem;line-height:1.7;font-size:1rem">
+      A signed permission slip is required for <strong style="color:var(--sand)">every participant</strong> — youth and adult leaders alike. Due by <strong style="color:var(--gold)">April 26th</strong>.
+    </p>
+    <p style="color:rgba(242,232,213,0.55);margin-bottom:1.75rem;line-height:1.7;font-size:0.9rem">
+      Use the form app below — your personal info saves automatically to your device so you only fill it out once. Next activity, just open it, select your name, and generate a new form in seconds. Works for families with multiple participants too.
+    </p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+      <a href="foothills_permission.html"
+        style="display:inline-flex;align-items:center;gap:0.75rem;background:var(--river-blue);color:var(--sand);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.1em;padding:1rem 2rem;border-radius:2px;transition:all 0.2s"
+        onmouseover="this.style.background='var(--river-teal)';this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.background='var(--river-blue)';this.style.transform='translateY(0)'">
+        📋 Open Permission Form
+      </a>
+    </div>
+    <div style="margin-top:1.25rem;background:rgba(26,123,158,0.08);border:1px solid rgba(26,123,158,0.2);border-radius:4px;padding:1rem 1.25rem">
+      <p style="font-size:0.82rem;color:rgba(242,232,213,0.6);line-height:1.8">
+        <strong style="color:var(--river-teal)">How it works:</strong><br>
+        1. Open the form &nbsp;·&nbsp; 2. Click <strong>＋</strong> to add a participant &nbsp;·&nbsp; 3. Fill in their info and click <strong>💾 Save</strong><br>
+        4. Click <strong>📄 Generate Form</strong> — a filled PDF downloads instantly &nbsp;·&nbsp; 5. Print, sign, and return to a trip leader<br>
+        <em style="color:rgba(242,232,213,0.4)">Next activity: open the link, your info is already there — just generate and print.</em>
+      </p>
+    </div>
+    <p style="margin-top:1rem;font-size:0.82rem;color:rgba(242,232,213,0.35)">
+      Questions? Reach out to a trip leader
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-title">2026 High Adventure</div>
+  <p>Foothills Ward Young Men &bull; May 26–30, 2026</p>
+  <p style="margin-top:0.5rem">Lee's Ferry &bull; Glen Canyon &bull; Buckskin Gulch</p>
+  <p class="footer-contact">We look forward to this faith-filled adventure together — Foothills Ward Youth Leaders</p>
+</footer>
+
+<script>
+  // Intersection observer for fade-in animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Stagger children in grids
+  document.querySelectorAll('.overview-grid .overview-card, .pack-grid .pack-category, .days-grid .day-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 80}ms`;
+  });
+</script>
+</body>
+</html>

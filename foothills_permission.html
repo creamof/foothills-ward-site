@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foothills Ward — Permission Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #C4531A;
+    --blue: #1A5FA8;
+    --teal: #1A7B9E;
+    --sand: #F2E8D5;
+    --dark: #1A1410;
+    --green: #16a34a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Barlow',sans-serif; background:#d0ccc6; min-height:100vh; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--dark);
+    color: var(--sand);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+    position: sticky;
+    top:0;
+    z-index:200;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .topbar-left h1 { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; letter-spacing:0.04em; }
+  .topbar-left p { font-size:0.72rem; color:rgba(242,232,213,0.6); margin-top:1px; }
+  .topbar-btns { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+
+  .btn { padding:0.45rem 1.1rem; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+         font-size:0.85rem; letter-spacing:0.06em; border:none; border-radius:2px; cursor:pointer;
+         transition:all 0.15s; white-space:nowrap; }
+  .btn-save   { background:#2563eb; color:white; }
+  .btn-save:hover { background:#1d4ed8; }
+  .btn-gen    { background:var(--orange); color:white; }
+  .btn-gen:hover  { background:#e8752a; }
+  .btn-clear  { background:transparent; color:rgba(242,232,213,0.6); border:1px solid rgba(242,232,213,0.25); }
+  .btn-clear:hover { color:white; border-color:white; }
+
+  .save-msg { font-size:0.72rem; color:#86efac; display:none; }
+
+  /* ── BANNERS ── */
+  .banner {
+    max-width:820px; margin:0.75rem auto 0; padding:0.55rem 1.2rem;
+    border-radius:3px; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;
+  }
+  .banner-blue  { background:#dbeafe; border-left:4px solid #2563eb; color:#1e3a8a; }
+  .banner-orange{ background:#fff3e8; border-left:4px solid var(--orange); color:#7c2d12; }
+  .banner strong { font-weight:700; }
+
+  /* ── MAIN LAYOUT ── */
+  .layout { max-width:820px; margin:1rem auto 3rem; padding:0 0.75rem; }
+
+  /* ── SECTIONS ── */
+  .card {
+    background:white; border-radius:6px; overflow:hidden;
+    box-shadow:0 1px 8px rgba(0,0,0,0.12); margin-bottom:1rem;
+  }
+  .card-header {
+    padding:0.6rem 1.25rem; font-family:'Barlow Condensed',sans-serif;
+    font-weight:700; font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .card-header.orange { background:var(--orange); color:white; }
+  .card-header.blue   { background:#2563eb; color:white; }
+  .card-header.dark   { background:var(--dark); color:var(--sand); }
+  .card-header .badge {
+    font-size:0.65rem; background:rgba(255,255,255,0.2); padding:1px 7px;
+    border-radius:10px; letter-spacing:0.08em;
+  }
+  .card-body { padding:1rem 1.25rem; }
+
+  /* ── FIELD GRID ── */
+  .fgrid { display:grid; gap:0.65rem; }
+  .fgrid.c1  { grid-template-columns:1fr; }
+  .fgrid.c2  { grid-template-columns:1fr 1fr; }
+  .fgrid.c3  { grid-template-columns:1fr 1fr 1fr; }
+  .fgrid.c21 { grid-template-columns:2fr 1fr; }
+  .fgrid.c12 { grid-template-columns:1fr 2fr; }
+
+  .field { display:flex; flex-direction:column; gap:3px; }
+  .field label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em;
+                 text-transform:uppercase; color:#6b7280; }
+  .field .val { font-size:0.9rem; font-weight:600; color:#7c2d12;
+                background:#fff8f3; border:1px solid #fed7aa;
+                border-radius:3px; padding:5px 8px; line-height:1.3; }
+  .field input, .field select, .field textarea {
+    border:1.5px solid #d1d5db; border-radius:3px; padding:6px 9px;
+    font-family:'Barlow',sans-serif; font-size:0.9rem; color:#111827;
+    background:#f9fafb; transition:border-color 0.15s, background 0.15s; width:100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline:none; border-color:#2563eb; background:white;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.1);
+  }
+  .field textarea { resize:vertical; min-height:56px; }
+
+  /* ── YES/NO ── */
+  .yn-wrap { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .yn-wrap label { display:flex; align-items:center; gap:5px; font-size:0.9rem; cursor:pointer; }
+  .yn-wrap input[type=radio] { width:15px; height:15px; accent-color:#1a5fa8; }
+  .yn-detail { margin-top:0.4rem; display:none; }
+  .yn-detail.show { display:block; }
+  .yn-detail .field label { color:#2563eb; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:560px){
+    .fgrid.c2,.fgrid.c3,.fgrid.c21,.fgrid.c12 { grid-template-columns:1fr; }
+  }
+
+  /* ── SUCCESS MODAL ── */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    z-index:500; align-items:center; justify-content:center;
+  }
+  .modal-overlay.show { display:flex; }
+  .modal {
+    background:white; border-radius:8px; padding:2rem; max-width:400px; width:90%;
+    text-align:center; box-shadow:0 8px 40px rgba(0,0,0,0.3);
+  }
+  .modal h2 { font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; color:var(--green); margin-bottom:0.5rem; }
+  .modal p  { font-size:0.9rem; color:#4b5563; line-height:1.6; margin-bottom:1.25rem; }
+  .modal .steps { text-align:left; background:#f0fdf4; border-radius:4px; padding:0.75rem 1rem; margin-bottom:1rem; }
+  .modal .steps li { font-size:0.85rem; color:#166534; margin-bottom:4px; }
+  .modal-close { background:var(--green); color:white; border:none; padding:0.6rem 1.5rem;
+                 border-radius:3px; font-weight:700; font-size:0.9rem; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>Foothills Ward — Permission Form</h1>
+    <p>Fill once · Save · Reuse every activity</p>
+  </div>
+  <div class="topbar-btns">
+    <span class="save-msg" id="save-msg">✓ Saved!</span>
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border-radius:3px;padding:3px 8px;border:1px solid rgba(255,255,255,0.15)">
+      <span style="font-size:0.7rem;color:rgba(242,232,213,0.5);letter-spacing:0.1em;text-transform:uppercase">Participant:</span>
+      <select id="participant-select" onchange="switchParticipant(this.value)"
+        style="background:transparent;border:none;color:#f2e8d5;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;outline:none;padding:2px 4px;max-width:130px">
+        <option value="">— Select —</option>
+      </select>
+      <button class="btn" onclick="addParticipant()" title="Add participant"
+        style="background:rgba(255,255,255,0.12);color:#f2e8d5;padding:2px 8px;font-size:0.8rem;border:none">＋</button>
+      <button class="btn" onclick="deleteParticipant()" title="Remove this participant"
+        style="background:transparent;color:rgba(242,232,213,0.4);padding:2px 6px;font-size:0.8rem;border:none">✕</button>
+    </div>
+    <button class="btn btn-save" onclick="saveInfo()">💾 Save</button>
+    <button class="btn btn-gen"  onclick="generatePDF()">📄 Generate Form</button>
+  </div>
+</div>
+
+<div style="max-width:820px;margin:0 auto;padding:0 0.75rem">
+  <div class="banner banner-orange" id="banner-main">
+    🟠 <span><strong>Orange fields</strong> are pre-filled for each activity — they update automatically when you open an activity link. &nbsp;
+    🔵 <strong>Blue fields</strong> save to your device and reload automatically next time.</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- EVENT DETAILS -->
+  <div class="card">
+    <div class="card-header orange">
+      📋 Event Details — Pre-filled for each activity
+      <span class="badge">Changes each activity</span>
+    </div>
+    <div class="card-body">
+      <div class="fgrid c21" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Event</label>
+          <div class="val" id="ev-name">2026 High Adventure — Foothills Ward Young Men</div>
+        </div>
+        <div class="field">
+          <label>Date(s) of Event</label>
+          <div class="val" id="ev-dates">May 26–30, 2026</div>
+        </div>
+      </div>
+      <div class="fgrid c1" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Describe event and activities</label>
+          <div class="val" id="ev-desc">Kayaking the Colorado River through Glen Canyon (Lee's Ferry), camping, and hiking Buckskin Gulch — world's longest slot canyon. Page, AZ.</div>
+        </div>
+      </div>
+      <div class="fgrid c3">
+        <div class="field">
+          <label>Ward</label>
+          <div class="val" id="ev-ward">Foothills Ward</div>
+        </div>
+        <div class="field">
+          <label>Stake</label>
+          <div class="val" id="ev-stake">Glendale North Stake</div>
+        </div>
+        <div class="field">
+          <label>Leader</label>
+          <div class="val" id="ev-leader">David Wheat · 210-601-2913 · creamof@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT INFO -->
+  <div class="card">
+    <div class="card-header blue">
+      👤 Contact Information
+      <span class="badge">Saved to your device</span>
+    </div>
+    <div class="card-body">
+      <div class="fgrid c3" style="margin-bottom:0.65rem">
+        <div class="field" style="grid-column:1/3">
+          <label>Participant Full Name *</label>
+          <input type="text" id="p-name" placeholder="First and Last Name">
+        </div>
+        <div class="field">
+          <label>Date of Birth *</label>
+          <input type="text" id="p-dob" placeholder="MM/DD/YYYY">
+        </div>
+      </div>
+      <div class="fgrid c3" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Age *</label>
+          <input type="number" id="p-age" placeholder="Age" min="10" max="25">
+        </div>
+        <div class="field" style="grid-column:2/4">
+          <label>Telephone Number *</label>
+          <input type="tel" id="p-tel" placeholder="(602) 555-1234">
+        </div>
+      </div>
+      <div class="fgrid c3" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Address *</label>
+          <input type="text" id="p-addr" placeholder="Street address">
+        </div>
+        <div class="field">
+          <label>City *</label>
+          <input type="text" id="p-city" placeholder="City">
+        </div>
+        <div class="field">
+          <label>State *</label>
+          <input type="text" id="p-state" placeholder="AZ">
+        </div>
+      </div>
+      <div class="fgrid c3">
+        <div class="field">
+          <label>Emergency Contact *</label>
+          <input type="text" id="p-ec" placeholder="Parent / Guardian name">
+        </div>
+        <div class="field">
+          <label>Primary Phone *</label>
+          <input type="tel" id="p-ec1" placeholder="(602) 555-1234">
+        </div>
+        <div class="field">
+          <label>Secondary Phone</label>
+          <input type="tel" id="p-ec2" placeholder="(602) 555-5678">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDICAL -->
+  <div class="card">
+    <div class="card-header blue">
+      🏥 Medical Information
+      <span class="badge">Saved to your device</span>
+    </div>
+    <div class="card-body">
+
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.3rem">Does the participant require a special diet?</div>
+        <div class="yn-wrap">
+          <label><input type="radio" name="diet" id="diet-no" value="no" checked onchange="yn('diet-detail',false)"> No</label>
+          <label><input type="radio" name="diet" id="diet-yes" value="yes" onchange="yn('diet-detail',true)"> Yes</label>
+        </div>
+        <div class="yn-detail" id="diet-detail">
+          <div class="field"><label>Please explain dietary restrictions</label>
+          <input type="text" id="p-diet" placeholder=""></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.3rem">Does the participant have any allergies?</div>
+        <div class="yn-wrap">
+          <label><input type="radio" name="allergy" id="allergy-no" value="no" checked onchange="yn('allergy-detail',false)"> No</label>
+          <label><input type="radio" name="allergy" id="allergy-yes" value="yes" onchange="yn('allergy-detail',true)"> Yes</label>
+        </div>
+        <div class="yn-detail" id="allergy-detail">
+          <div class="field"><label>Please list all allergies</label>
+          <input type="text" id="p-allergy" placeholder=""></div>
+        </div>
+      </div>
+
+      <div class="fgrid c1" style="margin-bottom:0.75rem">
+        <div class="field">
+          <label>Medications (prescription or OTC) — leave blank if none</label>
+          <input type="text" id="p-meds" placeholder="">
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.3rem">Can the participant self-administer medication?</div>
+        <div class="yn-wrap">
+          <label><input type="radio" name="selfadmin" id="sa-yes" value="yes" checked> Yes</label>
+          <label><input type="radio" name="selfadmin" id="sa-no" value="no"> No — contact a trip leader directly</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONDITIONS -->
+  <div class="card">
+    <div class="card-header blue">
+      ⚠️ Conditions &amp; Limitations
+      <span class="badge">Saved to your device</span>
+    </div>
+    <div class="card-body">
+
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.3rem">Does the participant have a chronic or recurring illness?</div>
+        <div class="yn-wrap">
+          <label><input type="radio" name="chronic" id="chronic-no" value="no" checked onchange="yn('chronic-detail',false)"> No</label>
+          <label><input type="radio" name="chronic" id="chronic-yes" value="yes" onchange="yn('chronic-detail',true)"> Yes</label>
+        </div>
+        <div class="yn-detail" id="chronic-detail">
+          <div class="field"><label>Please explain</label>
+          <input type="text" id="p-chronic" placeholder=""></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.3rem">Has the participant had surgery or serious illness in the past year?</div>
+        <div class="yn-wrap">
+          <label><input type="radio" name="surgery" id="surg-no" value="no" checked onchange="yn('surgery-detail',false)"> No</label>
+          <label><input type="radio" name="surgery" id="surg-yes" value="yes" onchange="yn('surgery-detail',true)"> Yes</label>
+        </div>
+        <div class="yn-detail" id="surgery-detail">
+          <div class="field"><label>Please explain</label>
+          <input type="text" id="p-surgery" placeholder=""></div>
+        </div>
+      </div>
+
+      <div class="fgrid c1" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Other limits, restrictions, or disabilities</label>
+          <input type="text" id="p-limits" placeholder="Leave blank if none">
+        </div>
+      </div>
+
+      <div class="fgrid c1">
+        <div class="field">
+          <label>Other accommodations or special needs</label>
+          <textarea id="p-other" placeholder="Leave blank if none"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="card">
+    <div class="card-header dark">📌 How to Submit</div>
+    <div class="card-body">
+      <ol style="padding-left:1.25rem;font-size:0.88rem;color:#374151;line-height:2">
+        <li>Fill out the fields above and click <strong>💾 Save My Info</strong> — your info is saved in this browser and will reload automatically next time</li>
+        <li>Click <strong>📄 Generate My Form</strong> — a filled PDF will download automatically</li>
+        <li><strong>Option A — Print:</strong> Print, sign both lines, and hand to a trip leader by <strong class="due-date">April 26th</strong></li>
+        <li><strong>Option B — Digital:</strong> Open the PDF, add a digital signature to both lines, then email or text the signed PDF to a trip leader</li>
+        <li>Next activity: just open this link again, your info is already here — click Generate and go</li>
+      </ol>
+      <p style="margin-top:0.75rem;font-size:0.8rem;color:#6b7280">
+        Questions? Reach out to a trip leader
+      </p>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>✅ Form Generated!</h2>
+    <p>Your permission form has been downloaded. You can submit it one of two ways:</p>
+    <ol class="steps">
+      <li><strong>Print & Sign</strong> — Print the PDF, sign both signature lines, and return to a trip leader by <strong class="due-date">April 26th</strong></li>
+      <li><strong>Sign Digitally & Send</strong> — Open the PDF in Preview, Adobe, or any PDF app, add a digital signature to both lines, then email or text the signed PDF to a trip leader</li>
+    </ol>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">Got it!</button>
+  </div>
+</div>
+
+<script>
+// ── MULTI-PARTICIPANT STORAGE ──
+const STORE_KEY = 'foothills_perm_participants_v1';
+
+// ── ACTIVITY CONFIGS ──
+const ACTIVITIES = {
+  'high-adventure': {
+    name:   '2026 High Adventure — Foothills Ward Young Men',
+    dates:  'May 26–30, 2026',
+    desc:   "Kayaking the Colorado River through Glen Canyon (Lee's Ferry), camping, and hiking Buckskin Gulch — world's longest slot canyon. Page, AZ.",
+    ward:   'Foothills Ward',
+    stake:  'Glendale North Stake',
+    due:    'April 26th',
+    leader: 'David Wheat',
+    phone:  '210-601-2913',
+    email:  'creamof@gmail.com',
+  },
+  'triathlon': {
+    name:   "Gila Hank's Sprint Triathlon",
+    dates:  'April 11, 2026',
+    desc:   '75-yard swim, 6-mile bike, and 1.5-mile run at Eastern Arizona College, Thatcher, AZ. Participants may compete solo or as part of a relay team.',
+    ward:   'Foothills Ward',
+    stake:  'Glendale North Stake',
+    due:    'April 6th',
+    leader: 'David Wheat',
+    phone:  '210-601-2913',
+    email:  'creamof@gmail.com',
+  },
+};
+
+// Load activity from URL parameter, default to high-adventure
+function getActivity() {
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get('a') || 'high-adventure';
+  return ACTIVITIES[key] || ACTIVITIES['high-adventure'];
+}
+
+function applyActivity() {
+  const act = getActivity();
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get('a') || 'high-adventure';
+
+  // Update event detail display fields
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('ev-name',   act.name);
+  set('ev-dates',  act.dates);
+  set('ev-desc',   act.desc);
+  set('ev-ward',   act.ward);
+  set('ev-stake',  act.stake);
+  set('ev-leader', `${act.leader} · ${act.phone} · ${act.email}`);
+
+  // Update due dates throughout
+  document.querySelectorAll('.due-date').forEach(el => el.textContent = act.due);
+
+  // Update page title
+  document.title = `${act.name} — Permission Form`;
+
+  // Update topbar subtitle
+  const sub = document.querySelector('.topbar-left p');
+  if (sub) sub.textContent = `${act.name} · Due ${act.due}`;
+}
+
+function getParticipants() {
+  return JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+}
+function saveParticipants(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+function getCurrentParticipant() {
+  return localStorage.getItem('foothills_perm_active_participant') || null;
+}
+function setCurrentParticipant(name) {
+  localStorage.setItem('foothills_perm_active_participant', name);
+}
+
+const TEXT_FIELDS = ['p-name','p-dob','p-age','p-tel','p-addr','p-city','p-state',
+                     'p-ec','p-ec1','p-ec2','p-diet','p-allergy','p-meds',
+                     'p-chronic','p-surgery','p-limits','p-other'];
+const RADIO_FIELDS = [
+  {name:'diet',def:'no'},{name:'allergy',def:'no'},{name:'selfadmin',def:'yes'},
+  {name:'chronic',def:'no'},{name:'surgery',def:'no'}
+];
+
+// ── PARTICIPANT MANAGEMENT ──
+function populateParticipantSelect(activeParticipant) {
+  const sel = document.getElementById('participant-select');
+  const participants = getParticipants();
+  sel.innerHTML = '<option value="">— Select —</option>';
+  Object.keys(participants).forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    if (name === activeParticipant) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function loadParticipantData(participantName) {
+  if (!participantName) return;
+  const participants = getParticipants();
+  const saved = participants[participantName] || {};
+  TEXT_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = saved[id] || '';
+  });
+  RADIO_FIELDS.forEach(({name, def}) => {
+    const val = saved['r_'+name] || def;
+    const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+    if (el) el.checked = true;
+    const det = document.getElementById(name+'-detail');
+    if (det) det.classList.toggle('show', val === 'yes');
+  });
+}
+
+function switchParticipant(name) {
+  if (!name) return;
+  setCurrentParticipant(name);
+  loadParticipantData(name);
+  document.getElementById('banner-main').innerHTML =
+    `✅ <strong>${name}'s info loaded.</strong> Review, then click <strong>📄 Generate Form</strong> to download.`;
+}
+
+function addParticipant() {
+  const name = prompt('Enter participant\'s first name:');
+  if (!name || !name.trim()) return;
+  const trimmed = name.trim();
+  const participants = getParticipants();
+  if (!participants[trimmed]) participants[trimmed] = {};
+  saveParticipants(participants);
+  setCurrentParticipant(trimmed);
+  populateParticipantSelect(trimmed);
+  // Clear fields for new participant
+  TEXT_FIELDS.forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  RADIO_FIELDS.forEach(({name:n, def}) => {
+    const el = document.querySelector(`input[name="${n}"][value="${def}"]`);
+    if(el) el.checked = true;
+    const det = document.getElementById(n+'-detail');
+    if(det) det.classList.remove('show');
+  });
+  document.getElementById('banner-main').innerHTML =
+    `👤 New participant <strong>${trimmed}</strong> added. Fill in their info and click <strong>💾 Save</strong>.`;
+}
+
+function deleteParticipant() {
+  const active = getCurrentParticipant();
+  if (!active) { alert('No participant selected.'); return; }
+  if (!confirm(`Remove ${active} from saved profiles?`)) return;
+  const participants = getParticipants();
+  delete participants[active];
+  saveParticipants(participants);
+  localStorage.removeItem('foothills_perm_active_participant');
+  populateParticipantSelect(null);
+  TEXT_FIELDS.forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('banner-main').innerHTML =
+    '👤 Profile removed. Select a participant above or click ＋ to add one.';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  applyActivity();
+  const participants = getParticipants();
+  const active = getCurrentParticipant();
+
+  if (Object.keys(participants).length === 0) {
+    // First time — prompt to add a participant
+    document.getElementById('banner-main').innerHTML =
+      '👋 <strong>First time here?</strong> Click the <strong>＋</strong> button above to add the participant\'s name, fill in their info, and click <strong>💾 Save</strong>. Next time it loads automatically!';
+  } else {
+    populateParticipantSelect(active);
+    if (active && participants[active]) {
+      loadParticipantData(active);
+      document.getElementById('banner-main').innerHTML =
+        `✅ <strong>${active}\'s info loaded.</strong> &nbsp; Switch participants above if needed, then click <strong>📄 Generate Form</strong>.`;
+    } else {
+      document.getElementById('banner-main').innerHTML =
+        '👆 <strong>Select a participant above</strong> or click <strong>＋</strong> to add one.';
+    }
+  }
+});
+
+function yn(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('show', show);
+}
+
+function saveInfo() {
+  let active = getCurrentParticipant();
+  if (!active) {
+    const name = prompt('Enter participant\'s first name to save:');
+    if (!name || !name.trim()) return;
+    active = name.trim();
+    setCurrentParticipant(active);
+    populateParticipantSelect(active);
+  }
+  const data = {};
+  TEXT_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  RADIO_FIELDS.forEach(({name}) => {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    if (el) data['r_'+name] = el.value;
+  });
+  const participants = getParticipants();
+  participants[active] = data;
+  saveParticipants(participants);
+  populateParticipantSelect(active);
+  const msg = document.getElementById('save-msg');
+  msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 2500);
+}
+
+function clearSaved() {
+  // clearSaved now handled by deleteParticipant
+}
+
+function g(id) { return (document.getElementById(id)||{}).value || ''; }
+function radio(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : 'no';
+}
+
+async function generatePDF() {
+  const name = g('p-name');
+  if (!name.trim()) {
+    alert('Please enter the participant name before generating the form.');
+    document.getElementById('p-name').focus();
+    return;
+  }
+
+  saveInfo();
+
+  const btn = document.querySelector('.btn-gen');
+  const origText = btn.innerHTML;
+  btn.innerHTML = '⏳ Generating...';
+  btn.disabled = true;
+
+  try {
+    // Send form data to Vercel API endpoint — uses pdftk server-side for perfect results
+    const payload = {
+      // Event details
+      evName:  document.getElementById('ev-name').textContent,
+      evDates: document.getElementById('ev-dates').textContent,
+      evDesc:  document.getElementById('ev-desc').textContent,
+      evWard:  document.getElementById('ev-ward').textContent,
+      evStake: document.getElementById('ev-stake').textContent,
+      evLeader: getActivity().leader,
+      evPhone:  getActivity().phone,
+      evEmail:  getActivity().email,
+      // Participant info
+      name:    g('p-name'),
+      dob:     g('p-dob'),
+      age:     g('p-age'),
+      tel:     g('p-tel'),
+      addr:    g('p-addr'),
+      city:    g('p-city'),
+      state:   g('p-state'),
+      ec:      g('p-ec'),
+      ec1:     g('p-ec1'),
+      ec2:     g('p-ec2'),
+      meds:    g('p-meds'),
+      limits:  g('p-limits'),
+      other:   g('p-other'),
+      // Medical text
+      diet:       g('p-diet'),
+      allergy:    g('p-allergy'),
+      chronic:    g('p-chronic'),
+      surgery:    g('p-surgery'),
+      // Yes/No choices
+      diet_yn:    radio('diet'),
+      allergy_yn: radio('allergy'),
+      selfadmin:  radio('selfadmin'),
+      chronic_yn: radio('chronic'),
+      surgery_yn: radio('surgery'),
+    };
+
+    const resp = await fetch('/api/generate-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({error: resp.statusText}));
+      throw new Error(err.error || 'Server error');
+    }
+
+    const blob = await resp.blob();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'PermissionForm_' + name.replace(/[^a-z0-9]/gi, '_') + '.pdf';
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    document.getElementById('modal').classList.add('show');
+
+  } catch(err) {
+    console.error(err);
+    alert('Error generating PDF: ' + err.message);
+  } finally {
+    btn.innerHTML = origText;
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
