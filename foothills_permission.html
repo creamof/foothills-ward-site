@@ -204,7 +204,7 @@
         </div>
         <div class="field">
           <label>Leader</label>
-          <div class="val" id="ev-leader">David Wheat · 210-601-2913 · creamof@gmail.com</div>
+          <div class="val" id="ev-leader">David Wheat · 210-601-2913 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="70130215111d1f1630171d11191c5e131f1d">[email&#160;protected]</a></div>
         </div>
       </div>
     </div>
@@ -399,7 +399,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── MULTI-PARTICIPANT STORAGE ──
 const STORE_KEY = 'foothills_perm_participants_v1';
 
@@ -644,6 +644,7 @@ async function generatePDF() {
       evDesc:  document.getElementById('ev-desc').textContent,
       evWard:  document.getElementById('ev-ward').textContent,
       evStake: document.getElementById('ev-stake').textContent,
+      activity: new URLSearchParams(window.location.search).get('a') || 'high-adventure',
       evLeader: getActivity().leader,
       evPhone:  getActivity().phone,
       evEmail:  getActivity().email,
