@@ -2,7 +2,6 @@
   "version": 2,
   "functions": {
     "api/generate-pdf.py": {
-      "runtime": "python3.9",
       "memory": 512,
       "maxDuration": 15
     }
