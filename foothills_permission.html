@@ -689,7 +689,13 @@ async function generatePDF() {
     const blob = await resp.blob();
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'PermissionForm_' + name.replace(/[^a-z0-9]/gi, '_') + '.pdf';
+    const activityLabels = {
+      'high-adventure': 'HighAdventure',
+      'triathlon':      'Triathlon',
+    };
+    const activityKey = activityLabels[new URLSearchParams(window.location.search).get('a') || 'high-adventure'] || 'Activity';
+    const safeName = name.replace(/[^a-z0-9]/gi, '_');
+    link.download = `${activityKey}_${safeName}_Permission.pdf`;
     link.click();
     URL.revokeObjectURL(link.href);
 
