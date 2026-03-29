@@ -367,6 +367,41 @@
     </div>
   </div>
 
+  <!-- SIGNATURES -->
+  <div class="card">
+    <div class="card-header blue">
+      ✍️ Signatures
+      <span class="badge">Type your name to sign</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:1rem;line-height:1.5">
+        Type your full name below as your signature. By signing, the participant agrees to abide by Church standards and activity rules, and the parent/guardian gives permission and authorizes emergency medical treatment.
+      </p>
+      <div class="fgrid c2" style="margin-bottom:0.65rem">
+        <div class="field">
+          <label>Participant Signature *</label>
+          <input type="text" id="p-sig-participant" placeholder="Type full name to sign">
+        </div>
+        <div class="field">
+          <label>Today's Date</label>
+          <input type="text" id="p-sig-participant-date" placeholder="MM/DD/YYYY" readonly
+            style="background:#f3f4f6;cursor:default">
+        </div>
+      </div>
+      <div class="fgrid c2">
+        <div class="field">
+          <label>Parent / Guardian Signature *</label>
+          <input type="text" id="p-sig-parent" placeholder="Type full name to sign">
+        </div>
+        <div class="field">
+          <label>Today's Date</label>
+          <input type="text" id="p-sig-parent-date" placeholder="MM/DD/YYYY" readonly
+            style="background:#f3f4f6;cursor:default">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- INSTRUCTIONS -->
   <div class="card">
     <div class="card-header dark">📌 How to Submit</div>
@@ -476,7 +511,8 @@ function setCurrentParticipant(name) {
 
 const TEXT_FIELDS = ['p-name','p-dob','p-age','p-tel','p-addr','p-city','p-state',
                      'p-ec','p-ec1','p-ec2','p-diet','p-allergy','p-meds',
-                     'p-chronic','p-surgery','p-limits','p-other'];
+                     'p-chronic','p-surgery','p-limits','p-other',
+                     'p-sig-participant','p-sig-parent'];
 const RADIO_FIELDS = [
   {name:'diet',def:'no'},{name:'allergy',def:'no'},{name:'selfadmin',def:'yes'},
   {name:'chronic',def:'no'},{name:'surgery',def:'no'}
@@ -558,6 +594,17 @@ function deleteParticipant() {
 
 window.addEventListener('DOMContentLoaded', () => {
   applyActivity();
+
+  // Auto-fill today's date in signature date fields
+  const today = new Date();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  const yyyy = today.getFullYear();
+  const todayStr = `${mm}/${dd}/${yyyy}`;
+  ['p-sig-participant-date','p-sig-parent-date'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = todayStr;
+  });
   const participants = getParticipants();
   const active = getCurrentParticipant();
 
@@ -673,6 +720,11 @@ async function generatePDF() {
       selfadmin:  radio('selfadmin'),
       chronic_yn: radio('chronic'),
       surgery_yn: radio('surgery'),
+      // Signatures
+      sigParticipant: g('p-sig-participant'),
+      sigParticipantDate: document.getElementById('p-sig-participant-date') ? document.getElementById('p-sig-participant-date').value : '',
+      sigParent: g('p-sig-parent'),
+      sigParentDate: document.getElementById('p-sig-parent-date') ? document.getElementById('p-sig-parent-date').value : '',
     };
 
     const resp = await fetch('/api/generate-pdf', {

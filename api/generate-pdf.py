@@ -60,6 +60,10 @@ def fill_pdf(data):
         'If yes please explain_2':                  data.get('surgery', ''),
         'Other limitations':                        data.get('limits', ''),
         'Special needs':                            data.get('other', ''),
+        'Participants signature':                   data.get('sigParticipant', ''),
+        'Date':                                     data.get('sigParticipantDate', ''),
+        'Parent or guardians signature if participant is a minor': data.get('sigParent', ''),
+        'Date_2':                                   data.get('sigParentDate', ''),
     }
     w.update_page_form_field_values(w.pages[0], TEXT_FIELDS, auto_regenerate=False)
 
